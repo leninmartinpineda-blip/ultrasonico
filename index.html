@@ -1,169 +1,23 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Perro Inteligente</title>
-
-<style>
-body {
-  margin: 0;
-  overflow: hidden;
-  font-family: Arial;
-  text-align: center;
-  background: linear-gradient(to top, #87ceeb, #ffffff);
-}
-
-/* SUELO */
-.suelo {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 120px;
-  background: #4caf50;
-}
-
-/* PERRO */
-.perro {
-  position: absolute;
-  bottom: 120px;
-  left: 0;
-  transition: left 0.5s linear;
-}
-
-/* CUERPO */
-.cuerpo {
-  width: 100px;
-  height: 40px;
-  background: #8d6e63;
-  border-radius: 20px;
-  position: relative;
-}
-
-/* CABEZA */
-.cabeza {
-  width: 35px;
-  height: 35px;
-  background: #6d4c41;
-  border-radius: 50%;
-  position: absolute;
-  right: -20px;
-  top: -10px;
-}
-
-/* OJO */
-.ojo {
-  width: 6px;
-  height: 6px;
-  background: black;
-  border-radius: 50%;
-  position: absolute;
-  top: 10px;
-  left: 10px;
-}
-
-/* OREJA */
-.oreja {
-  width: 10px;
-  height: 15px;
-  background: #5d4037;
-  position: absolute;
-  top: -10px;
-  left: 5px;
-  border-radius: 50%;
-}
-
-/* COLA */
-.cola {
-  width: 20px;
-  height: 5px;
-  background: #6d4c41;
-  position: absolute;
-  left: -15px;
-  top: 10px;
-  transform-origin: right;
-}
-
-.moverCola {
-  animation: colaAnim 0.3s infinite alternate;
-}
-
-@keyframes colaAnim {
-  from { transform: rotate(10deg); }
-  to { transform: rotate(-20deg); }
-}
-
-/* PATAS */
-.pata {
-  width: 8px;
-  height: 20px;
-  background: #5d4037;
-  position: absolute;
-  bottom: -15px;
-}
-
-.p1 { left: 15px; }
-.p2 { left: 35px; }
-.p3 { left: 60px; }
-.p4 { left: 80px; }
-
-.caminar {
-  animation: caminar 0.3s infinite alternate;
-}
-
-@keyframes caminar {
-  from { transform: translateY(0); }
-  to { transform: translateY(5px); }
-}
-
-/* TEXTO */
-#estado {
-  font-size: 24px;
-  margin-top: 10px;
-}
-
-</style>
-</head>
-
-<body>
-
-<h1>🐶 Perro Inteligente</h1>
-<div id="distancia">Cargando...</div>
-<div id="estado"></div>
-
-<div class="perro" id="perro">
-
-  <div class="cuerpo">
-    <div class="cola" id="cola"></div>
-
-    <div class="cabeza">
-      <div class="ojo"></div>
-      <div class="oreja"></div>
-    </div>
-
-    <div class="pata p1" id="p1"></div>
-    <div class="pata p2" id="p2"></div>
-    <div class="pata p3" id="p3"></div>
-    <div class="pata p4" id="p4"></div>
-
-  </div>
-
-</div>
-
-<div class="suelo"></div>
-
-<script>
-
-const token = "90566ba2-a5a2-4866-b27f-ce443fb995c4";
-
 function actualizar() {
 
-  fetch("https://api.tago.io/data?variable=distancia", {
-    headers: { "Device-Token": token }
+  fetch("https://api.tago.io/data?variable=distancia&qty=1", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Device-Token": token
+    }
   })
   .then(res => res.json())
   .then(data => {
 
-    let d = data.result[0].value;
+    console.log("Respuesta API:", data); // 👈 para depurar
+
+    if (!data.result || data.result.length === 0) {
+      document.getElementById("distancia").innerHTML = "Sin datos...";
+      return;
+    }
+
+    let d = Number(data.result[0].value);
 
     document.getElementById("distancia").innerHTML =
       "Distancia: " + d + " cm";
@@ -206,19 +60,8 @@ function actualizar() {
     }
 
   })
-  .catch(err => console.log(err));
+  .catch(err => {
+    console.error("Error:", err);
+    document.getElementById("distancia").innerHTML = "Error de conexión";
+  });
 }
-
-setInterval(actualizar, 700);
-
-</script>
-
-</body>
-</html>
-
-
-
-
-
- 
-

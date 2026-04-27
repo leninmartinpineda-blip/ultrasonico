@@ -125,6 +125,15 @@ body {
 
 <body>
 
+<!-- TEXTO AGREGADO -->
+<div style="position:absolute; left:10px; top:10px; font-size:20px;">
+  Inicio
+</div>
+
+<div style="position:absolute; right:10px; top:10px; font-size:20px;">
+  Final
+</div>
+
 <h1>🐶 Perro Inteligente</h1>
 <div id="distancia">Cargando...</div>
 <div id="estado"></div>
@@ -168,7 +177,6 @@ function actualizar() {
 
     console.log("Respuesta API:", data);
 
-    // VALIDACIÓN
     if (!data.result || data.result.length === 0) {
       document.getElementById("distancia").innerHTML = "Sin datos...";
       return;

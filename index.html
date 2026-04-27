@@ -2,106 +2,122 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Auto Inteligente v2</title>
+<title>Perro Inteligente</title>
 
 <style>
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to top, #1e3c72, #2a5298);
-  color: white;
-  text-align: center;
-}
-
-/* PANEL */
-.panel {
-  padding: 20px;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-/* VELOCÍMETRO */
-.barra {
-  width: 80%;
-  height: 25px;
-  margin: 20px auto;
-  background: #444;
-  border-radius: 20px;
   overflow: hidden;
+  font-family: Arial;
+  text-align: center;
+  background: linear-gradient(to top, #87ceeb, #ffffff);
 }
 
-.progreso {
-  height: 100%;
-  width: 0%;
-  background: lime;
-  transition: 0.5s;
-}
-
-/* SEMÁFORO */
-.semaforo {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 20px;
-}
-
-.luz {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #333;
-}
-
-.rojo.activo { background: red; }
-.amarillo.activo { background: yellow; }
-.verde.activo { background: lime; }
-
-/* ESCENA */
-.escena {
-  position: relative;
-  height: 200px;
-  margin-top: 30px;
-}
-
-/* AUTO NUEVO */
-.auto {
+/* SUELO */
+.suelo {
   position: absolute;
-  bottom: 20px;
-  left: 0;
-  width: 100px;
-  height: 50px;
-  background: orange;
-  border-radius: 10px;
-  transition: left 0.5s;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  background: #4caf50;
 }
 
-/* RUEDAS */
-.rueda {
-  width: 20px;
-  height: 20px;
+/* PERRO */
+.perro {
+  position: absolute;
+  bottom: 120px;
+  left: 0;
+  transition: left 0.5s linear;
+}
+
+/* CUERPO */
+.cuerpo {
+  width: 100px;
+  height: 40px;
+  background: #8d6e63;
+  border-radius: 20px;
+  position: relative;
+}
+
+/* CABEZA */
+.cabeza {
+  width: 35px;
+  height: 35px;
+  background: #6d4c41;
+  border-radius: 50%;
+  position: absolute;
+  right: -20px;
+  top: -10px;
+}
+
+/* OJO */
+.ojo {
+  width: 6px;
+  height: 6px;
   background: black;
   border-radius: 50%;
   position: absolute;
-  bottom: -10px;
+  top: 10px;
+  left: 10px;
 }
 
-.r1 { left: 10px; }
-.r2 { right: 10px; }
-
-.giro {
-  animation: girar 0.4s linear infinite;
+/* OREJA */
+.oreja {
+  width: 10px;
+  height: 15px;
+  background: #5d4037;
+  position: absolute;
+  top: -10px;
+  left: 5px;
+  border-radius: 50%;
 }
 
-@keyframes girar {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+/* COLA */
+.cola {
+  width: 20px;
+  height: 5px;
+  background: #6d4c41;
+  position: absolute;
+  left: -15px;
+  top: 10px;
+  transform-origin: right;
+}
+
+.moverCola {
+  animation: colaAnim 0.3s infinite alternate;
+}
+
+@keyframes colaAnim {
+  from { transform: rotate(10deg); }
+  to { transform: rotate(-20deg); }
+}
+
+/* PATAS */
+.pata {
+  width: 8px;
+  height: 20px;
+  background: #5d4037;
+  position: absolute;
+  bottom: -15px;
+}
+
+.p1 { left: 15px; }
+.p2 { left: 35px; }
+.p3 { left: 60px; }
+.p4 { left: 80px; }
+
+.caminar {
+  animation: caminar 0.3s infinite alternate;
+}
+
+@keyframes caminar {
+  from { transform: translateY(0); }
+  to { transform: translateY(5px); }
 }
 
 /* TEXTO */
 #estado {
-  font-size: 22px;
+  font-size: 24px;
   margin-top: 10px;
 }
 
@@ -110,167 +126,30 @@ h1 {
 
 <body>
 
-<div class="panel">
-  <h1>🚗 Auto Inteligente v2</h1>
-  <div id="distancia">Distancia: ...</div>
+<h1>🐶 Perro Inteligente</h1>
+<div id="distancia">Cargando...</div>
+<div id="estado"></div>
 
-  <div class="barra">
-    <div class="progreso" id="barra"></div>
+<div class="perro" id="perro">
+
+  <div class="cuerpo">
+    <div class="cola" id="cola"></div>
+
+    <div class="cabeza">
+      <div class="ojo"></div>
+      <div class="oreja"></div>
+    </div>
+
+    <div class="pata p1" id="p1"></div>
+    <div class="pata p2" id="p2"></div>
+    <div class="pata p3" id="p3"></div>
+    <div class="pata p4" id="p4"></div>
+
   </div>
 
-  <div id="estado"></div>
-
-  <div class="semaforo">
-    <div class="luz rojo" id="rojo"></div>
-    <div class="luz amarillo" id="amarillo"></div>
-    <div class="luz verde" id="verde"></div>
-  </div>
 </div>
 
-<div class="escena">
-  <div class="auto" id="auto">
-    <div class="rueda r1" id="r1"></div>
-    <div class="rueda r2" id="r2"></div>
-  </div>
-</div>
-
-<script>
-
-const token = "<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<title>Auto Inteligente v2</title>
-
-<style>
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(to top, #1e3c72, #2a5298);
-  color: white;
-  text-align: center;
-}
-
-/* PANEL */
-.panel {
-  padding: 20px;
-}
-
-h1 {
-  margin-bottom: 10px;
-}
-
-/* VELOCÍMETRO */
-.barra {
-  width: 80%;
-  height: 25px;
-  margin: 20px auto;
-  background: #444;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.progreso {
-  height: 100%;
-  width: 0%;
-  background: lime;
-  transition: 0.5s;
-}
-
-/* SEMÁFORO */
-.semaforo {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin: 20px;
-}
-
-.luz {
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  background: #333;
-}
-
-.rojo.activo { background: red; }
-.amarillo.activo { background: yellow; }
-.verde.activo { background: lime; }
-
-/* ESCENA */
-.escena {
-  position: relative;
-  height: 200px;
-  margin-top: 30px;
-}
-
-/* AUTO NUEVO */
-.auto {
-  position: absolute;
-  bottom: 20px;
-  left: 0;
-  width: 100px;
-  height: 50px;
-  background: orange;
-  border-radius: 10px;
-  transition: left 0.5s;
-}
-
-/* RUEDAS */
-.rueda {
-  width: 20px;
-  height: 20px;
-  background: black;
-  border-radius: 50%;
-  position: absolute;
-  bottom: -10px;
-}
-
-.r1 { left: 10px; }
-.r2 { right: 10px; }
-
-.giro {
-  animation: girar 0.4s linear infinite;
-}
-
-@keyframes girar {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* TEXTO */
-#estado {
-  font-size: 22px;
-  margin-top: 10px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="panel">
-  <h1>🚗 Auto Inteligente v2</h1>
-  <div id="distancia">Distancia: ...</div>
-
-  <div class="barra">
-    <div class="progreso" id="barra"></div>
-  </div>
-
-  <div id="estado"></div>
-
-  <div class="semaforo">
-    <div class="luz rojo" id="rojo"></div>
-    <div class="luz amarillo" id="amarillo"></div>
-    <div class="luz verde" id="verde"></div>
-  </div>
-</div>
-
-<div class="escena">
-  <div class="auto" id="auto">
-    <div class="rueda r1" id="r1"></div>
-    <div class="rueda r2" id="r2"></div>
-  </div>
-</div>
+<div class="suelo"></div>
 
 <script>
 
@@ -289,127 +168,57 @@ function actualizar() {
     document.getElementById("distancia").innerHTML =
       "Distancia: " + d + " cm";
 
-    let barra = document.getElementById("barra");
+    let perro = document.getElementById("perro");
     let estado = document.getElementById("estado");
 
-    let rojo = document.getElementById("rojo");
-    let amarillo = document.getElementById("amarillo");
-    let verde = document.getElementById("verde");
-
-    let auto = document.getElementById("auto");
-    let r1 = document.getElementById("r1");
-    let r2 = document.getElementById("r2");
-
-    // BARRA DE VELOCIDAD
-    let porcentaje = Math.min(d, 100);
-    barra.style.width = porcentaje + "%";
+    let cola = document.getElementById("cola");
+    let patas = [
+      document.getElementById("p1"),
+      document.getElementById("p2"),
+      document.getElementById("p3"),
+      document.getElementById("p4")
+    ];
 
     // MOVIMIENTO
     let max = window.innerWidth - 120;
     let pos = (d / 100) * max;
-    auto.style.left = pos + "px";
 
-    // LIMPIAR SEMÁFORO
-    rojo.classList.remove("activo");
-    amarillo.classList.remove("activo");
-    verde.classList.remove("activo");
+    if (pos < 0) pos = 0;
+    if (pos > max) pos = max;
+
+    perro.style.left = pos + "px";
 
     // COMPORTAMIENTO
     if (d < 15) {
-      estado.innerHTML = "🛑 DETENIDO";
-      rojo.classList.add("activo");
-      r1.classList.remove("giro");
-      r2.classList.remove("giro");
+      estado.innerHTML = "🐶 Quieto";
+      cola.classList.remove("moverCola");
+      patas.forEach(p => p.classList.remove("caminar"));
     } 
     else if (d < 30) {
-      estado.innerHTML = "⚠️ REDUCIR VELOCIDAD";
-      amarillo.classList.add("activo");
-      r1.classList.add("giro");
-      r2.classList.add("giro");
+      estado.innerHTML = "🐕 Caminando";
+      cola.classList.add("moverCola");
+      patas.forEach(p => p.classList.add("caminar"));
     } 
     else {
-      estado.innerHTML = "🚀 VELOCIDAD MÁXIMA";
-      verde.classList.add("activo");
-      r1.classList.add("giro");
-      r2.classList.add("giro");
+      estado.innerHTML = "🐕‍🦺 Corriendo feliz";
+      cola.classList.add("moverCola");
+      patas.forEach(p => p.classList.add("caminar"));
     }
 
   })
   .catch(err => console.log(err));
 }
 
-setInterval(actualizar, 800);
-
-</script>
-
-</body>
-</html>";
-
-function actualizar() {
-
-  fetch("https://api.tago.io/data?variable=distancia", {
-    headers: { "Device-Token": token }
-  })
-  .then(res => res.json())
-  .then(data => {
-
-    let d = data.result[0].value;
-
-    document.getElementById("distancia").innerHTML =
-      "Distancia: " + d + " cm";
-
-    let barra = document.getElementById("barra");
-    let estado = document.getElementById("estado");
-
-    let rojo = document.getElementById("rojo");
-    let amarillo = document.getElementById("amarillo");
-    let verde = document.getElementById("verde");
-
-    let auto = document.getElementById("auto");
-    let r1 = document.getElementById("r1");
-    let r2 = document.getElementById("r2");
-
-    // BARRA DE VELOCIDAD
-    let porcentaje = Math.min(d, 100);
-    barra.style.width = porcentaje + "%";
-
-    // MOVIMIENTO
-    let max = window.innerWidth - 120;
-    let pos = (d / 100) * max;
-    auto.style.left = pos + "px";
-
-    // LIMPIAR SEMÁFORO
-    rojo.classList.remove("activo");
-    amarillo.classList.remove("activo");
-    verde.classList.remove("activo");
-
-    // COMPORTAMIENTO
-    if (d < 15) {
-      estado.innerHTML = "🛑 DETENIDO";
-      rojo.classList.add("activo");
-      r1.classList.remove("giro");
-      r2.classList.remove("giro");
-    } 
-    else if (d < 30) {
-      estado.innerHTML = "⚠️ REDUCIR VELOCIDAD";
-      amarillo.classList.add("activo");
-      r1.classList.add("giro");
-      r2.classList.add("giro");
-    } 
-    else {
-      estado.innerHTML = "🚀 VELOCIDAD MÁXIMA";
-      verde.classList.add("activo");
-      r1.classList.add("giro");
-      r2.classList.add("giro");
-    }
-
-  })
-  .catch(err => console.log(err));
-}
-
-setInterval(actualizar, 800);
+setInterval(actualizar, 700);
 
 </script>
 
 </body>
 </html>
+
+
+
+
+
+ 
+
